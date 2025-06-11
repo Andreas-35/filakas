@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pembelians', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('supplier_id')->constrained('suppliers');
-            $table->date('tanggal');
-            $table->timestamps();
+        Schema::table('barangs', function (Blueprint $table) {
+            $table->string('kode')->nullable(); // atau tanpa nullable jika wajib
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pembelians');
+        Schema::table('barangs', function (Blueprint $table) {
+            //
+        });
     }
 };

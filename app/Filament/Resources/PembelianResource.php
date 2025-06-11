@@ -25,6 +25,10 @@ class PembelianResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\DatePicker::make('tanggal')
+                ->label('Tanggal Pembelian')
+                ->required()
+                ->default(now())->columnSpanFull(),
                 Forms\Components\Select::make('supplier_id')
                 ->options(
                     \App\Models\Supplier::pluck('nama_perusahaan','id')
