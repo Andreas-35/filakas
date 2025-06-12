@@ -2,8 +2,11 @@
 
 namespace App\Filament\Resources\PembelianItemResource\Widgets;
 
+use Filament\Forms\Components\TextInput;
 use Filament\Tables;
+use Filament\Tables\Columns\Summarizers\Summarizer;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\DB;
 use Filament\Widgets\TableWidget as BaseWidget;
 
 class PembelianItemWidget extends BaseWidget
@@ -24,8 +27,28 @@ class PembelianItemWidget extends BaseWidget
             )
             ->columns([
                 Tables\Columns\TextColumn::make('barang.nama')->label('Nama Barang'),
-                Tables\Columns\TextColumn::make('jumlah')->label('Jumlah Barang'),
-                Tables\Columns\TextColumn::make('harga')->label('Harga Barang'),
+                Tables\Columns\TextColumn::make('jumlah')->label('Jumlah Barang')
+                ->alignCenter(),
+                Tables\Columns\TextColumn::make('harga')->label('Harga Barang')
+                ->money('IDR')->alignEnd(),
+                Tables\Columns\TextColumn::make('total')
+                ->label('Total Barang')
+                ->getStateUsing(function ($record) {
+                    return $record->jumlah * $record->harga;
+                })->money('IDR')->alignEnd()
+                ->summarize([
+                    Summarizer::make()
+                        ->using(function ($query) {
+                           return  $query->sum(DB::raw('jumlah * harga'));
+                        })->money('IDR'),
+                ])
+
+            ])->actions([
+                Tables\Actions\EditAction::make()
+                ->form([
+                    TextInput::make('jumlah')->required(),
+                ]),
+                Tables\Actions\DeleteAction::make()
             ]);
     }
 }
